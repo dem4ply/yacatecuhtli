@@ -3,6 +3,7 @@ django-cors-headers==1.1.0
 djangorestframework==3.3.2
 djangorestframework-xml==1.3.0
 drf-nested-routers==0.11.1
+django-oauth-toolkit==0.10.0
 coverage==4.0.3
 pyflakes==1.0.0
 factory-boy==2.6.0
