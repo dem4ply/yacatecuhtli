@@ -184,3 +184,5 @@ local_settings.py
 
 #solo se subio como plantilla
 api_next_cloud/settings/database/dev.py
+
+.html_coverage

@@ -2,7 +2,6 @@ import factory
 import factory.fuzzy
 from person.models import Address
 from .country import Country_factory
-from .person import Person_factory
 from snippet import sp_random
 
 class Address_factory( factory.DjangoModelFactory ):
@@ -18,7 +17,5 @@ class Address_factory( factory.DjangoModelFactory ):
 	address_type = factory.LazyAttribute( lambda t: sp_random.generate_string( ) )
 
 	country = factory.SubFactory( Country_factory )
-	owner = factory.SubFactory( Person_factory )
-
 	class Meta:
 		model = Address

@@ -2,6 +2,7 @@ import factory
 import factory.fuzzy
 from person.models import Person
 from snippet import sp_random
+from .address import Address_factory
 
 class Person_factory( factory.DjangoModelFactory ):
 	#pk = factory.fuzzy.FuzzyInteger( 1000 )
