@@ -8,7 +8,7 @@ class Person( models.Model ):
 	status = models.BooleanField( default=True )
 
 class Country( models.Model ):
-	iso = models.CharField( max_length=3 )
+	iso = models.CharField( max_length=3, unique=True )
 	name = models.CharField( max_length=64 )
 
 class Address( models.Model ):

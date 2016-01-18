@@ -50,3 +50,14 @@ def generate_email( domain=None, extention=None ):
 		'domain': domain,
 		'extention': extention,
 	})
+
+def generate_bool():
+	"""
+	Genera un booleano aleatorio
+	
+	Returns
+	-------
+	bool
+		booleano random
+	"""
+	return bool( random.getrandbits(1) )
