@@ -11,8 +11,11 @@ class Person_serializer( serializers.ModelSerializer ):
 class Country_serializer( serializers.ModelSerializer ):
 	class Meta:
 		model = Country
-		fields = '__all__'
+		fields = ( '__all__' )
 		read_only_fields = ( 'pk' )
+
+	def create( self, validate_country ):
+		return Country( **validate_country )
 
 class Address_serializer( serializers.ModelSerializer ):
 	class Meta:

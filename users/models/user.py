@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from users.managers import User_manager
+from rest_framework.authtoken.models import Token
 
 class User( AbstractBaseUser, PermissionsMixin ):
 	"""
@@ -41,6 +42,44 @@ class User( AbstractBaseUser, PermissionsMixin ):
 		Obtiene el nombre corto del usaurio
 		"""
 		return self.username
+
+	def get_token( self ):
+		"""
+		TODO: make test
+		Obtiene el token del usuario
+
+		Return
+		------
+
+		Token
+			token del usuario
+
+		Raises
+		------
+
+		Token.DoesNotExist:
+			EL usuario no tiene token
+		"""
+		return Token.objects.get( user=self )
+
+	def refresh_token( self ):
+		"""
+		TODO: make test
+		Refresca el token el usuario o lo crea
+
+		Returns
+		-------
+
+		Token
+			token que se genero para el usuario
+		"""
+		try:
+			token = self.get_token()
+			token.delete()
+		except Token.DoesNotExist:
+			pass
+		finally:
+			return Token.objects.create( user=self )
 
 	def __str__( self ):
 		return "{} - {} # {}".format( self.id, self.username, self.get_full_name() )

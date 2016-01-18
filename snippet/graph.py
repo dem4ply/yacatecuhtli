@@ -25,7 +25,7 @@ def array_of_dict( array, key='id', many=False ):
 			define si las claves se repiten
 			si el True regresara un dicionario de listas
 			si es False regresara un dicionario de dicionarios
-	
+
 	Returns
 	-------
 		dict
@@ -42,6 +42,42 @@ def array_of_dict( array, key='id', many=False ):
 		return result
 	else:
 		return { a[ key ]: a for a in array }
+
+def array_of_object( array, key='id', many=False ):
+	"""
+	genera un dicionario que funciona como mapa del array
+
+	el mapa usa el arguemto key para generar la clave
+
+	Arguments
+	---------
+		array: list
+			lista de objetos que se desean mapear
+		key: string
+			define el nombre de la clave de los dicionarios por la
+			cual se generara el mapa
+		many: bool
+			define si las claves se repiten
+			si el True regresara un dicionario de listas
+			si es False regresara un dicionario de dicionarios
+
+	Returns
+	-------
+		dict
+			dicionario que representa un mapa donde sus clave es
+			el valor de la key del objeto
+	"""
+	if many:
+		result = {}
+		for a in array:
+			v = getattr( a, key )
+			if v in result:
+				result[ v ].append( a )
+			else:
+				result[ v ] = [ a ]
+		return result
+	else:
+		return { getattr( a, key ): a for a in array }
 
 def tree_array_of_dict( array, keys=[ 'id' ], many=False ):
 	"""
@@ -61,7 +97,7 @@ def tree_array_of_dict( array, keys=[ 'id' ], many=False ):
 			define si las claves se repiten
 			si el True regresara un dicionario de listas
 			si es False regresara un dicionario de dicionarios
-	
+
 	Returns
 	-------
 		dict
@@ -82,5 +118,8 @@ def tree_array_of_dict( array, keys=[ 'id' ], many=False ):
 						aux_map[ a[ keys[i] ] ] = {}
 						
 			else:
-				aux_map[ a[ keys[i] ] ] = {}
+				if i == l_keys-1:
+					aux_map[ a[ keys[i] ] ] = a
+				else:
+					aux_map[ a[ keys[i] ] ] = {}
 	return result

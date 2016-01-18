@@ -12,6 +12,6 @@ REST_FRAMEWORK = {
 		'rest_framework.parsers.JSONParser',
 		'rest_framework_xml.parsers.XMLParser',
 	),
-	'EXCEPTION_HANDLER': 'system.exceptions.generic_exception_handler',
+	#'EXCEPTION_HANDLER': 'system.exceptions.generic_exception_handler',
 	'NON_FIELD_ERRORS_KEY': 'detail',
 }
