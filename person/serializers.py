@@ -1,9 +1,9 @@
-from django.utils.translation import ugettext as _
-from django.shortcuts import get_object_or_404
-from rest_framework import serializers, status
 from .models import Person, Country, Address
-from system.exceptions import Http_code_error
+from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _
+from rest_framework import serializers, status
+from system.exceptions import Http_code_error
 
 class Person_serializer( serializers.ModelSerializer ):
 	class Meta:

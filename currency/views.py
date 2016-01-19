@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 class Currency_view( viewsets.ModelViewSet ):
 	"""
-	CRUD para los paises
+	CRUD para la moneda
 	"""
 	authentication_classes = ( TokenAuthentication, )
 	permission_classes = ( IsAuthenticated, )
