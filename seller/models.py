@@ -2,9 +2,19 @@ from django.db import models
 from person.models import Person
 from item.models import Item
 from person.models import Country
+from currency.models import Currency
 
 class Reconcilation( models.Model ):
 	created = models.DateTimeField( auto_now_add=True )
+
+class Transfer( models.Model ):
+	created = models.DateTimeField( auto_now_add=True )
+	date_transfered = models.DateTimeField()
+	amount = models.DecimalField( max_digits=14, decimal_places=4 )
+	status = models.BooleanField( default=True )
+	deposit_account = models.ForeignKey( Seller_bank_account )
+	payer = models.ForeignKey( Payer )
+	currency = models.ForeignKey( Currency )
 
 class Payment( models.Model ):
 	created = models.DateTimeField( auto_now_add=True )
@@ -31,6 +41,7 @@ class Payment( models.Model ):
 	payer = models.ForeignKey( Payer )
 	payment_method = models.ForeignKey( Payment_method )
 	currency = models.ForeignKey( Currency )
+
 	shipping_address = models.ForeignKey( Address )
 	billing_address = models.ForeignKey( Address )
 	payment_country = models.ForeignKey( Country )
