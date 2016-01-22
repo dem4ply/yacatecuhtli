@@ -13,7 +13,7 @@ class Item_view( viewsets.ModelViewSet ):
 	"""
 	CRUD para los items
 	"""
-	authentication_classes = ( TokenAuthentication, )
+	#authentication_classes = ( TokenAuthentication, )
 	permission_classes = ( IsAuthenticated, )
 	serializer_class = Item_serializer
 	queryset = Item.objects.all()
@@ -97,7 +97,7 @@ class Category_view( viewsets.ModelViewSet ):
 	"""
 	CRUD para los items
 	"""
-	authentication_classes = ( TokenAuthentication, )
+	#authentication_classes = ( TokenAuthentication, )
 	permission_classes = ( IsAuthenticated, )
 	serializer_class = Category_serializer
 	queryset = Category.objects.all()

@@ -8,8 +8,10 @@ def get_user_test_with_token( ):
 		email=sp_random.generate_email(),
 		password=sp_random.generate_string() )
 	user_test.save();
+	token = user_test.refresh_token()
+	#print ( user_test, token )
 
-	return ( user_test, user_test.refresh_token() )
+	return ( user_test, token )
 
 def get_superuser_test_with_token( dns='promolog2' ):
 	user_test = User.objects.create_superuser(
@@ -17,5 +19,7 @@ def get_superuser_test_with_token( dns='promolog2' ):
 		email=sp_random.generate_email(),
 		password=sp_random.generate_string() )
 	user_test.save();
+	token = user_test.refresh_token()
+	#print ( user_test, token )
 
-	return ( user_test, user_test.refresh_token() )
+	return ( user_test, token )

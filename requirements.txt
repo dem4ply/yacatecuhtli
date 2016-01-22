@@ -7,6 +7,9 @@ django-oauth-toolkit==0.10.0
 coverage==4.0.3
 pyflakes==1.0.0
 factory-boy==2.6.0
+mysqlclient=1.3.7
+jedi=0.9.0
+django-mysql==1.0.1
 #six==1.10
 #django-pyodbc==0.2.8
 #Sphinx==1.3.1

@@ -2,7 +2,6 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from users.managers import User_manager
-from rest_framework.authtoken.models import Token
 
 class User( AbstractBaseUser, PermissionsMixin ):
 	"""
@@ -60,6 +59,7 @@ class User( AbstractBaseUser, PermissionsMixin ):
 		Token.DoesNotExist:
 			EL usuario no tiene token
 		"""
+		from .token import Token
 		return Token.objects.get( user=self )
 
 	def refresh_token( self ):
@@ -73,6 +73,7 @@ class User( AbstractBaseUser, PermissionsMixin ):
 		Token
 			token que se genero para el usuario
 		"""
+		from .token import Token
 		try:
 			token = self.get_token()
 			token.delete()

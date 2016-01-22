@@ -3,6 +3,8 @@ from person.models import Person
 from item.models import Item
 from person.models import Country, Address
 from currency.models import Currency, Bank
+from users.models import User
+from seller.managers import Seller_manager
 
 class Seller_bank( models.Model ):
 	account_number = models.CharField( max_length=64 )
@@ -101,11 +103,14 @@ class Fee( models.Model ):
 	payment_menthod = models.ForeignKey( Payment_method )
 
 class Seller( models.Model ):
+	user = models.ForeignKey( User )
 	person = models.ForeignKey( Person )
 	items = models.ManyToManyField( Item )
 	shares = models.ManyToManyField( Fee )
 	banks = models.ManyToManyField( Bank, through=Seller_bank,
 		through_fields=( 'seller', 'bank' ) )
+
+	objects = Seller_manager()
 
 class Payer( models.Model ):
 	person = models.ForeignKey( Person )

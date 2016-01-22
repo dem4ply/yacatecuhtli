@@ -23,7 +23,7 @@ class Test_person_serializer( TestCase ):
 		self.assertTrue( is_valid, serializer.errors )
 		person_result = serializer.save()
 		for field in person._meta.get_all_field_names():
-			if field != 'address':
+			if field != 'address' and field != 'seller' and field != 'payer':
 				self.assertEqual( getattr( person_result, field ),
 					getattr( person, field ) )
 
@@ -37,7 +37,7 @@ class Test_person_serializer( TestCase ):
 		self.assertTrue( is_valid, serializer.errors )
 		person_result = serializer.save()
 		for field in person._meta.get_all_field_names():
-			if field != 'address':
+			if field != 'address' and field != 'seller' and field != 'payer':
 				self.assertEqual( getattr( person_result, field ),
 					getattr( person, field ) )
 

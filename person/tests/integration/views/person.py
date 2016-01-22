@@ -65,7 +65,7 @@ class Test_api_person_authorize( APITestCase ):
 			'format': 'json',
 		} )
 		self.client.credentials( http_authorization='token ' +
-			self.user_test_token.key )
+			self.user_test_token.public_key )
 		# no deberia de ser valido porque no se a autentificado el usuario
 		response = self.client.get( url, format='json' )
 		self.assertEqual( response.status_code, status.HTTP_401_UNAUTHORIZED,
@@ -78,7 +78,7 @@ class Test_api_person_authorize( APITestCase ):
 			'pk': 1,
 		} )
 		self.client.credentials( http_authorization='token ' +
-			self.user_test_token.key )
+			self.user_test_token.public_key )
 		# no deberia de ser valido porque no se a autentificado el usuario
 		response = self.client.get( url, format='json' )
 		self.assertEqual( response.status_code, status.HTTP_401_UNAUTHORIZED,
@@ -90,7 +90,7 @@ class Test_api_person_authorize( APITestCase ):
 			'format': 'json',
 		} )
 		self.client.credentials( http_authorization='token ' +
-			self.user_test_token.key )
+			self.user_test_token.public_key )
 		# no deberia de ser valido porque no se a autentificado el usuario
 		response = self.client.post( url, format='json' )
 		self.assertEqual( response.status_code, status.HTTP_401_UNAUTHORIZED,
@@ -103,7 +103,7 @@ class Test_api_person_authorize( APITestCase ):
 			'pk': 1,
 		} )
 		self.client.credentials( http_authorization='token ' +
-			self.user_test_token.key )
+			self.user_test_token.public_key )
 		# no deberia de ser valido porque no se a autentificado el usuario
 		response = self.client.put( url, format='json' )
 		self.assertEqual( response.status_code, status.HTTP_401_UNAUTHORIZED,

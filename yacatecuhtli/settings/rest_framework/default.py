@@ -1,8 +1,9 @@
 REST_FRAMEWORK = {
 	# Use Django's standard `django.contrib.auth` permissions,
 	'DEFAULT_AUTHENTICATION_CLASSES': [
-		'rest_framework.authentication.BasicAuthentication',
-		'rest_framework.authentication.SessionAuthentication',
+		'users.authentication.Token_keys_authentication',
+		#'rest_framework.authentication.BasicAuthentication',
+		#'rest_framework.authentication.SessionAuthentication',
 	],
 	'DEFAULT_RENDERER_CLASSES': (
 		'rest_framework.renderers.JSONRenderer',

@@ -11,7 +11,7 @@ class Country_view( viewsets.ModelViewSet ):
 	"""
 	CRUD para los paises
 	"""
-	authentication_classes = ( TokenAuthentication, )
+	#authentication_classes = ( TokenAuthentication, )
 	permission_classes = ( IsAuthenticated, )
 	serializer_class = Country_serializer
 	queryset = Country.objects.all()
@@ -20,7 +20,7 @@ class Address_view( viewsets.ModelViewSet ):
 	"""
 	CRUD para las direciones
 	"""
-	authentication_classes = ( TokenAuthentication, )
+	#authentication_classes = ( TokenAuthentication, )
 	permission_classes = ( IsAuthenticated, )
 	serializer_class = Address_serializer
 	queryset = Address.objects.all()
@@ -92,7 +92,7 @@ class Person_view( viewsets.ModelViewSet ):
 	"""
 	CRUD para las personas
 	"""
-	authentication_classes = ( TokenAuthentication, )
+	#authentication_classes = ( TokenAuthentication, )
 	permission_classes = ( IsAuthenticated, )
 	serializer_class = Person_serializer
 	queryset = Person.objects.all()

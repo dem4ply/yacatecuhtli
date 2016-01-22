@@ -15,7 +15,7 @@ DATABASES = {
 		'NAME': 'test_1',
 		'ENGINE': 'django.db.backends.mysql',
 		'USER': 'dem4ply',
-		'PASSWORD': 'dem',
+		'PASSWORD': '',
 		'OPTIONS': {
 			'autocommit': True,
 		},
