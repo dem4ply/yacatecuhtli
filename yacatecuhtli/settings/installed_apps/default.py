@@ -13,4 +13,5 @@ INSTALLED_APPS = (
 	'person',
 	'currency',
 	'item',
+	'seller',
 )

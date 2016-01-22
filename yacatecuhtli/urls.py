@@ -21,7 +21,6 @@ import currency.urls
 import item.urls
 
 urlpatterns = [
-	url(r'^admin/', admin.site.urls),
 	url( r'^[V|v]1/', include( person.urls, namespace='person' ), ),
 	url( r'^[V|v]1/', include( currency.urls, namespace='currency' ), ),
 	url( r'^[V|v]1/', include( item.urls, namespace='item' ), ),
