@@ -5,25 +5,6 @@ from django.utils.translation import ugettext as _
 from rest_framework import serializers, status
 from system.exceptions import Http_code_error
 
-class Person_serializer( serializers.ModelSerializer ):
-	class Meta:
-		model = Person
-		fields = '__all__'
-		read_only_fields = ( 'pk', 'address' )
-
-	def create( self, validate_person ):
-		return Person( **validate_person )
-	
-	def update( self, instance, validate_person ):
-		instance.name = validate_person.get( 'name', instance.name )
-		instance.last_name = validate_person.get( 'last_name', instance.last_name )
-		instance.dni = validate_person.get( 'dni', instance.dni )
-		instance.email = validate_person.get( 'email', instance.email )
-		instance.status = validate_person.get( 'status', instance.status )
-
-		instance.save()
-		return instance
-
 class Country_serializer( serializers.ModelSerializer ):
 	class Meta:
 		model = Country
@@ -40,13 +21,24 @@ class Country_serializer( serializers.ModelSerializer ):
 		instance.save()
 		return instance
 
+"""
+class Address_serializer( serializers.ModelSerializer ):
+	country = Country_serializer()
+	class Meta:
+		model = Address
+		fields = ( 'description', 'street', 'external_number',
+			'internal_number', 'neighbour', 'city', 'state', 'zipcode',
+			'address_type', 'country' )
+"""
+
+
 class Address_country_serializer( Country_serializer ):
 	iso = serializers.CharField( required=False, allow_null=True, allow_blank=True )
 	pk = serializers.IntegerField( required=False, allow_null=True )
 
 	class Meta( Country_serializer.Meta ):
-		fields = ( 'pk', 'iso' )
-		read_only_fields = None
+		fields = ( 'pk', 'iso', 'name' )
+		read_only_fields = ( 'name', )
 
 	def validate( self, data ):
 		"""
@@ -67,7 +59,7 @@ class Address_serializer( serializers.ModelSerializer ):
 	class Meta:
 		model = Address
 		fields = ( '__all__' )
-		read_only_fields = ( 'pk' )
+		read_only_fields = ( 'pk', 'person' )
 
 	def create( self, validate_address ):
 		country = validate_address.pop( 'country' )
@@ -128,6 +120,27 @@ class Address_serializer( serializers.ModelSerializer ):
 			instance.zipcode )
 		instance.address_type = validate_address.get( 'address_type',
 			instance.address_type )
+
+		instance.save()
+		return instance
+
+class Person_serializer( serializers.ModelSerializer ):
+	address = Address_serializer( many=True, read_only=True )
+
+	class Meta:
+		model = Person
+		fields = '__all__'
+		read_only_fields = ( 'pk', 'address' )
+
+	def create( self, validate_person ):
+		return Person( **validate_person )
+	
+	def update( self, instance, validate_person ):
+		instance.name = validate_person.get( 'name', instance.name )
+		instance.last_name = validate_person.get( 'last_name', instance.last_name )
+		instance.dni = validate_person.get( 'dni', instance.dni )
+		instance.email = validate_person.get( 'email', instance.email )
+		instance.status = validate_person.get( 'status', instance.status )
 
 		instance.save()
 		return instance

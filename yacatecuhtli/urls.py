@@ -19,8 +19,10 @@ from django.conf.urls import patterns, url, include
 import person.urls
 import currency.urls
 import item.urls
+import users.urls
 
 urlpatterns = [
+	url( r'^[V|v]1/', include( users.urls, namespace='user' ), ),
 	url( r'^[V|v]1/', include( person.urls, namespace='person' ), ),
 	url( r'^[V|v]1/', include( currency.urls, namespace='currency' ), ),
 	url( r'^[V|v]1/', include( item.urls, namespace='item' ), ),

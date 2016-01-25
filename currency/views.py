@@ -10,7 +10,6 @@ class Currency_view( viewsets.ModelViewSet ):
 	"""
 	CRUD para la moneda
 	"""
-	#authentication_classes = ( TokenAuthentication, )
 	permission_classes = ( IsAuthenticated, )
 	serializer_class = Currency_serializer
 	queryset = Currency.objects.all()
@@ -19,7 +18,6 @@ class Bank_view( viewsets.ModelViewSet ):
 	"""
 	CRUD para la moneda
 	"""
-	#authentication_classes = ( TokenAuthentication, )
 	permission_classes = ( IsAuthenticated, )
 	serializer_class = Bank_serializer
 	queryset = Bank.objects.all()

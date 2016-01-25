@@ -3,7 +3,6 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 from unittest.mock import patch
-from users.tests import get_user_test_with_token
 from item.serializers import Item_serializer, Category_serializer
 from item.factories import Item_factory, Category_factory
 from system.exceptions import Http_code_error

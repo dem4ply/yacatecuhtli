@@ -11,7 +11,7 @@ AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 @python_2_unicode_compatible
 class Token( models.Model ):
 
-	user = models.OneToOneField( AUTH_USER_MODEL )
+	user = models.OneToOneField( AUTH_USER_MODEL, related_name='token' )
 	public_key = models.CharField( unique=True, max_length=64 )
 	private_key = models.CharField( unique=True, max_length=64 )
 	test_public_key = models.CharField( unique=True, max_length=64 )

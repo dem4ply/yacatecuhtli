@@ -1,6 +1,5 @@
 from django.db import models
 from person.models import Person
-from item.models import Item
 from person.models import Country, Address
 from currency.models import Currency, Bank
 from users.models import User
@@ -12,6 +11,22 @@ class Seller_bank( models.Model ):
 	status = models.BooleanField( default=True )
 	seller = models.ForeignKey( 'seller' )
 	bank = models.ForeignKey( Bank )
+
+class Seller( models.Model ):
+	user = models.ForeignKey( User, related_name='seller' )
+	person = models.ForeignKey( Person )
+	banks = models.ManyToManyField( Bank, through=Seller_bank,
+		through_fields=( 'seller', 'bank' ) )
+
+	objects = Seller_manager()
+"""
+
+class Payment_method( models.Model ):
+	code = models.CharField( max_length=32 )
+	name = models.CharField( max_length=64 )
+	type = models.CharField( max_length=128 )
+	ssl_img = models.CharField( max_length=128 )
+	country = models.ForeignKey( Country )
 
 class Reconcilation( models.Model ):
 	created = models.DateTimeField( auto_now_add=True )
@@ -25,12 +40,6 @@ class Transfer( models.Model ):
 	payer = models.ForeignKey( 'Payer' )
 	currency = models.ForeignKey( Currency )
 
-class Payment_method( models.Model ):
-	code = models.CharField( max_length=32 )
-	name = models.CharField( max_length=64 )
-	type = models.CharField( max_length=128 )
-	ssl_img = models.CharField( max_length=128 )
-	country = models.ForeignKey( Country )
 
 class Payment_transaction( models.Model ):
 	token = models.CharField( max_length=64 )
@@ -48,7 +57,7 @@ class Payment_items( models.Model ):
 	amount = models.DecimalField( max_digits=14, decimal_places=4 )
 	unit_price = models.DecimalField( max_digits=14, decimal_places=4 )
 	payment = models.ForeignKey( 'Payment' )
-	item = models.ForeignKey( Item )
+	item = models.ForeignKey( 'item.model.Item' )
 
 class Payment( models.Model ):
 	created = models.DateTimeField( auto_now_add=True )
@@ -81,7 +90,7 @@ class Payment( models.Model ):
 	payment_country = models.ForeignKey( Country )
 	transfer = models.ForeignKey( Transfer )
 	reconcilation = models.ForeignKey( Reconcilation )
-	items = models.ManyToManyField( Item, through=Payment_items,
+	items = models.ManyToManyField( 'item.models.Item', through=Payment_items,
 		through_fields=( 'payment', 'item' ) )
 
 class Processor( models.Model ):
@@ -102,15 +111,6 @@ class Fee( models.Model ):
 	terminal = models.ForeignKey( Terminal, null=True, blank=True )
 	payment_menthod = models.ForeignKey( Payment_method )
 
-class Seller( models.Model ):
-	user = models.ForeignKey( User )
-	person = models.ForeignKey( Person )
-	items = models.ManyToManyField( Item )
-	shares = models.ManyToManyField( Fee )
-	banks = models.ManyToManyField( Bank, through=Seller_bank,
-		through_fields=( 'seller', 'bank' ) )
-
-	objects = Seller_manager()
 
 class Payer( models.Model ):
 	person = models.ForeignKey( Person )
@@ -123,3 +123,4 @@ class Bin( models.Model ):
 	bin = models.CharField( max_length=16 )
 	seller = models.ForeignKey( Seller )
 	terminal = models.ForeignKey( Terminal )
+"""

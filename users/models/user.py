@@ -15,8 +15,6 @@ class User( AbstractBaseUser, PermissionsMixin ):
 							validators=[ alphanumeric ] )
 	email =       models.EmailField( verbose_name='email address',
 							max_length=255, blank=False, null=False )
-	first_name =  models.CharField( max_length=128, null=True, blank=True )
-	last_name =   models.CharField( max_length=128, null=True, blank=True )
 	date_joined = models.DateTimeField( auto_now_add=True )
 	is_active =   models.BooleanField( default=True, null=False )
 	is_staff =    models.BooleanField( default=False, null=False )
@@ -28,39 +26,6 @@ class User( AbstractBaseUser, PermissionsMixin ):
 	class Meta:
 		app_label = 'users'
 		db_table = 'users_user'
-
-	def get_full_name( self ):
-		"""
-		Optiene el nombre completo del usuario
-		"""
-		fullname = self.first_name + " " + self.last_name
-		return fullname
-
-	def get_short_name( self ):
-		"""
-		Obtiene el nombre corto del usaurio
-		"""
-		return self.username
-
-	def get_token( self ):
-		"""
-		TODO: make test
-		Obtiene el token del usuario
-
-		Return
-		------
-
-		Token
-			token del usuario
-
-		Raises
-		------
-
-		Token.DoesNotExist:
-			EL usuario no tiene token
-		"""
-		from .token import Token
-		return Token.objects.get( user=self )
 
 	def refresh_token( self ):
 		"""
@@ -75,12 +40,17 @@ class User( AbstractBaseUser, PermissionsMixin ):
 		"""
 		from .token import Token
 		try:
-			token = self.get_token()
-			token.delete()
+			if self.token:
+				token.delete()
 		except Token.DoesNotExist:
 			pass
 		finally:
 			return Token.objects.create( user=self )
 
 	def __str__( self ):
-		return "{} - {} # {}".format( self.id, self.username, self.get_full_name() )
+		from .token import Token
+		try:
+			token = self.token
+		except Token.DoesNotExist:
+			token = ''
+		return "{} - {}, {}".format( self.pk, self.username, token )

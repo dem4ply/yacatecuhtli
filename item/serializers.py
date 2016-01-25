@@ -5,11 +5,27 @@ from django.utils.translation import ugettext as _
 from rest_framework import serializers, status
 from system.exceptions import Http_code_error
 
+
+class Category_serializer( serializers.ModelSerializer ):
+	class Meta:
+		model = Category
+		fields = '__all__'
+		read_only_fields = ( 'pk', 'seller' )
+
+	def create( self, validate_category ):
+		return Category( **validate_category )
+	
+	def update( self, instance, validate_category ):
+		instance.name = validate_category.get( 'name', instance.name )
+
+		instance.save()
+		return instance
+
 class Item_serializer( serializers.ModelSerializer ):
 	class Meta:
 		model = Item
 		fields = '__all__'
-		read_only_fields = ( 'pk', )
+		read_only_fields = ( 'pk', 'category' )
 
 	def create( self, validate_item ):
 		return Item( **validate_item )
@@ -17,21 +33,6 @@ class Item_serializer( serializers.ModelSerializer ):
 	def update( self, instance, validate_item ):
 		instance.name = validate_item.get( 'name', instance.name )
 		instance.iso= validate_item.get( 'sku', instance.sku )
-
-		instance.save()
-		return instance
-
-class Category_serializer( serializers.ModelSerializer ):
-	class Meta:
-		model = Category
-		fields = '__all__'
-		read_only_fields = ( 'pk', 'items' )
-
-	def create( self, validate_category ):
-		return Category( **validate_category )
-	
-	def update( self, instance, validate_category ):
-		instance.name = validate_category.get( 'name', instance.name )
 
 		instance.save()
 		return instance

@@ -3,7 +3,6 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 from unittest.mock import patch
-from users.tests import get_user_test_with_token
 from currency.serializers import Currency_serializer, Bank_serializer
 from currency.factories import Currency_factory, Bank_factory
 from system.exceptions import Http_code_error
@@ -161,7 +160,7 @@ class Test_bank_serializer( APITestCase ):
 
 	@patch( "person.models.Country.objects.get" )
 	@patch( "currency.models.Bank.save" )
-	def test_update_country_iso( self, bank_save, country_get):
+	def test_update_country_iso_not_found( self, bank_save, country_get):
 		bank = Bank_factory.build()
 		bank.country = Country( iso='ttt' )
 		country_get.side_effect = Country.DoesNotExist

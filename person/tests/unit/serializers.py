@@ -3,7 +3,6 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 from unittest.mock import patch
-from users.tests import get_user_test_with_token
 from person.serializers import ( Address_country_serializer,
 	Address_serializer, Person_serializer, Country_serializer )
 from person.factories import ( Address_factory,
@@ -18,7 +17,9 @@ class Test_person_serializer( TestCase ):
 		person = Person_factory.build()
 
 		serializer = Person_serializer( person )
-		serializer = Person_serializer( data=serializer.data )
+		data = serializer.data
+		data.pop( 'address' )
+		serializer = Person_serializer( data=data )
 		is_valid = serializer.is_valid()
 		self.assertTrue( is_valid, serializer.errors )
 		person_result = serializer.save()

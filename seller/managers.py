@@ -8,24 +8,17 @@ from person.models import Person
 
 class Seller_manager( BaseUserManager ):
 
-	def create_test( self, email, password ):
+	def create_test( self, user ):
 		"""
 		Crea un vendedor de pruebas
 		"""
-		user = User.objects.create_user(
-			username="test_{}".format( sp_random.generate_string() ),
-			email=sp_random.generate_email(),
-			password=sp_random.generate_string()
-		)
-		user.set_password( password )
 		person = Person(
 			name=sp_random.generate_string(),
 			last_name=sp_random.generate_string(),
 			dni=sp_random.generate_string(),
-			email=email,
+			email=user.email,
 			status=True
 		)
-		user.save();
 		person.save()
 		seller = self.model( user=user, person=person )
 		seller.save()

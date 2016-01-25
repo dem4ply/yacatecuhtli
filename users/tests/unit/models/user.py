@@ -1,31 +1,31 @@
 from django.test import TestCase
 from users.models import User
-from users.factories import User_factory
+from users.factories import User_factory, Token_factory
+from unittest.mock import patch
 
-user_latest = User_factory.build()
-def user_manager_latest( cosa ):
-	return user_latest
+class Test_user_model( TestCase ):
 
-class test_user( TestCase ):
-	def test_get_full_name( self ):
-		user = User( username='user_name',
-			first_name='first',
-			last_name='last' )
-		self.assertEqual( user.get_full_name(), "first last" );
-		self.assertEqual( str( user ), "user_name" );
+	@patch( 'users.models.Token.delete' )
+	@patch( 'users.models.Token.save' )
+	def test_refresh_token( self, token_delete, token_save ):
+		user = User( pk=1, username='test' )
+		user.token = Token_factory.build()
+		token = user.refresh_token()
+		user.token.delete.assert_not_called()
+		token_save.assert_not_called()
+		self.assertEqual( token.user.pk, user.pk )
 
-	def test_get_full_name( self ):
-		user = User( username='user_name',
-			first_name='first',
-			last_name='last' )
-		self.assertEqual( user.get_short_name(), "user_name" );
-		self.assertEqual( str( user ), "user_name" );
+	def test_str( self ):
+		user = User( pk=1, username='test' )
+		user.token = Token_factory.build()
+		user_str = str( user )
+		self.assertEqual( user_str, "{} - {}, {}".format(
+			user.pk, user.username, user.token )
+		)
 
-	def test_get_full_name( self ):
-		user = User( username='user_name',
-			first_name='first',
-			last_name='last' )
-		full = user.get_full_name()
-		short = user.get_short_name()
-		self.assertEqual( str( user ),
-			"None - user_name # first last" );
+	def test_str_no_token( self ):
+		user = User( pk=1, username='test' )
+		user_str = str( user )
+		self.assertEqual( user_str, "{} - {}, ".format(
+			user.pk, user.username )
+		)
