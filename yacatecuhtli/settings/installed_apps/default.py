@@ -11,7 +11,4 @@ INSTALLED_APPS = (
 	#'rest_framework.authtoken',
 	'users',
 	'person',
-	'currency',
-	'item',
-	'seller',
 )

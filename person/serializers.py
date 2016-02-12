@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext as _
 from rest_framework import serializers, status
 from system.exceptions import Http_code_error
+from django.db.models import Q
 
 class Country_serializer( serializers.ModelSerializer ):
 	class Meta:
@@ -21,89 +22,48 @@ class Country_serializer( serializers.ModelSerializer ):
 		instance.save()
 		return instance
 
-"""
-class Address_serializer( serializers.ModelSerializer ):
-	country = Country_serializer()
+class Country_nested_serializer( serializers.ModelSerializer ):
 	class Meta:
-		model = Address
-		fields = ( 'description', 'street', 'external_number',
-			'internal_number', 'neighbour', 'city', 'state', 'zipcode',
-			'address_type', 'country' )
-"""
-
-
-class Address_country_serializer( Country_serializer ):
-	iso = serializers.CharField( required=False, allow_null=True, allow_blank=True )
-	pk = serializers.IntegerField( required=False, allow_null=True )
-
-	class Meta( Country_serializer.Meta ):
-		fields = ( 'pk', 'iso', 'name' )
+		model = Country
+		fields = ( 'pk', 'iso', 'name', )
 		read_only_fields = ( 'name', )
 
 	def validate( self, data ):
-		"""
-		revisa que almenos se haya mandado el iso o el pk
-		"""
 		pk = data.get( 'pk', 0 )
-		iso = data.get( 'iso' )
-		if pk and int( pk ) > 0:
-			return data
-		elif iso and iso != '':
-			return data
-		raise serializers.ValidationError( ( "Se debe de mandar "
-			"almenos un parametro pk o iso" ) )
-
+		iso = data.get( 'iso', '' )
+		if int( pk ) > 0 or iso != '':
+			country = Country.objects.filter( Q( pk=pk ) | Q( iso=iso ) ):
+			if country.exists():
+				return data
+			else:
+				raise serializers.ValidationError(
+					"No se encontro el pais en la base de datos"
+				)
+				
+		raise serializers.ValidationError(
+			"Se debe de mandar almenos un parametro pk o iso"
+		)
+	
 class Address_serializer( serializers.ModelSerializer ):
-	country = Address_country_serializer()
+	country = Country_nested_serializer()
 
 	class Meta:
 		model = Address
 		fields = ( '__all__' )
 		read_only_fields = ( 'pk', 'person' )
 
-	def create( self, validate_address ):
+	def create( self, validate_data ):
 		country = validate_address.pop( 'country' )
-		pk = country.get( 'pk' )
-		iso = country.get( 'iso' )
-		if pk:
-			try:
-				country = Country.objects.get( pk=pk )
-			except Country.DoesNotExist:
-				raise Http_code_error( status.HTTP_404_NOT_FOUND,
-					_( "No se encontro el pais con el id %d" ) % ( pk ) )
-		elif iso:
-			try:
-				country = Country.objects.get( iso=iso )
-			except Country.DoesNotExist:
-				raise Http_code_error( status.HTTP_404_NOT_FOUND,
-					_( "No se encontro el pais con el iso %s" ) % ( iso ) )
-		else:
-			raise Http_code_error( status.HTTP_400_BAD_REQUEST,
-				_( "No se envio el pais" ) )
-
-		address = Address( **validate_address )
+		country = Country.objects.get( **country )
+		address = Address( **validate_data )
 		address.country = country
 		
 		return address
 
 	def update( self, instance, validate_address ):
 		country = validate_address.pop( 'country' )
-		pk = country.get( 'pk' )
-		iso = country.get( 'iso' )
-		if pk:
-			try:
-				country = Country.objects.get( pk=pk )
-				instance.country = country
-			except Country.DoesNotExist:
-				raise Http_code_error( status.HTTP_404_NOT_FOUND,
-					_( "No se encontro el pais con el id %d" ) % ( pk ) )
-		elif iso:
-			try:
-				country = Country.objects.get( iso=iso )
-				instance.country = country
-			except Country.DoesNotExist:
-				raise Http_code_error( status.HTTP_404_NOT_FOUND,
-					_( "No se encontro el pais con el iso %s" ) % ( iso ) )
+		country = Country.objects.get( **country )
+
 		instance.description = validate_address.get( 'description',
 			instance.description )
 		instance.street = validate_address.get( 'street',
@@ -118,19 +78,15 @@ class Address_serializer( serializers.ModelSerializer ):
 		instance.state = validate_address.get( 'state', instance.state )
 		instance.zipcode = validate_address.get( 'zipcode',
 			instance.zipcode )
-		instance.address_type = validate_address.get( 'address_type',
-			instance.address_type )
 
 		instance.save()
 		return instance
 
 class Person_serializer( serializers.ModelSerializer ):
-	address = Address_serializer( many=True, read_only=True )
-
 	class Meta:
 		model = Person
 		fields = '__all__'
-		read_only_fields = ( 'pk', 'address' )
+		read_only_fields = ( 'pk', )
 
 	def create( self, validate_person ):
 		return Person( **validate_person )

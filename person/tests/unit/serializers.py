@@ -18,7 +18,6 @@ class Test_person_serializer( TestCase ):
 
 		serializer = Person_serializer( person )
 		data = serializer.data
-		data.pop( 'address' )
 		serializer = Person_serializer( data=data )
 		is_valid = serializer.is_valid()
 		self.assertTrue( is_valid, serializer.errors )

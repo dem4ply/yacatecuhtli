@@ -21,9 +21,14 @@ class Token_serializer( serializers.ModelSerializer ):
 
 class User_serializer( serializers.ModelSerializer ):
 	token = Token_serializer()
-	seller = Seller_serializer()
+	seller = Seller_serializer( required=False )
 
 	class Meta:
 		model = User
-		fields = ( 'username', 'email', 'token', 'seller' )
-		only_read_field = ( 'pk' )
+		fields = ( 'username', 'email', 'token', 'seller', 'password' )
+		only_read_field = ( 'pk', 'token', 'seller' )
+		only_write_field = ( 'password' )
+
+	def create( self, validate_data ):
+		user = User( **validate_data )
+		user.set_password( validate_data[ 'password' ] )

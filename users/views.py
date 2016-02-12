@@ -9,13 +9,15 @@ from .models import User
 
 from django.contrib.auth import authenticate
 from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import AllowAny
 from system.exceptions import Http_code_error
 
 class User_view( viewsets.ModelViewSet ):
 	"""
 	CRUD para los usuarios
 	"""
-	permission_classes = ( IsAuthenticated, )
+	#permission_classes = ( IsAuthenticated, )
 	serializer_class = User_serializer
 	queryset = User.objects.all()
 
@@ -35,3 +37,16 @@ class User_view( viewsets.ModelViewSet ):
 		raise Http_code_error( status.HTTP_404_NOT_FOUND,
 			_( "No se encontro el usuario" ) )
 
+	
+	@authentication_classes( ( AllowAny, ) )
+	@permission_classes( ( AllowAny, ) )
+	def create( self, request, format=None ):
+		data = User_serializer( data=request.data )
+		data.is_valid( raise_exception=True )
+		data = data.data
+		User.objects.create_user( data[ 'username' ], data[ 'email' ],
+			data[ 'password' ] )
+		user = data.save()
+		user.save()
+		return Response( User_serializer( user ).data,
+			status=status.HTTP_201_CREATED )

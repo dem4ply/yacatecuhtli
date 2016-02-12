@@ -3,6 +3,8 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from users.managers import User_manager
 
+from person.models import Person
+
 class User( AbstractBaseUser, PermissionsMixin ):
 	"""
 	Modelo de usuarios para personalisar los campos
@@ -18,6 +20,7 @@ class User( AbstractBaseUser, PermissionsMixin ):
 	date_joined = models.DateTimeField( auto_now_add=True )
 	is_active =   models.BooleanField( default=True, null=False )
 	is_staff =    models.BooleanField( default=False, null=False )
+	person =      models.ForeignKey( Person, null=True, blank=True )
 
 	objects = User_manager()
 	USERNAME_FIELD = 'username'
