@@ -13,8 +13,7 @@ class User( AbstractBaseUser, PermissionsMixin ):
 		message = "Only alphanumeric characters are allowed." )
 
 	### redefine los campos del modelo user
-	username =    models.CharField( unique=True, max_length=64,
-							validators=[ alphanumeric ] )
+	username =    models.CharField( unique=True, max_length=64, )
 	email =       models.EmailField( verbose_name='email address',
 							max_length=255, blank=False, null=False )
 	date_joined = models.DateTimeField( auto_now_add=True )
@@ -49,11 +48,3 @@ class User( AbstractBaseUser, PermissionsMixin ):
 			pass
 		finally:
 			return Token.objects.create( user=self )
-
-	def __str__( self ):
-		from .token import Token
-		try:
-			token = self.token
-		except Token.DoesNotExist:
-			token = ''
-		return "{} - {}, {}".format( self.pk, self.username, token )

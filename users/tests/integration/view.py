@@ -52,7 +52,7 @@ class test_api_credential( APITestCase ):
 				.format( response.status_code, response.data ) )
 
 	def test_register( self ):
-		url = reverse( 'user:user-create', kwargs={
+		url = reverse( 'user:user-list', kwargs={
 			'format': 'json',
 		} )
 		self.user_test.is_active = False

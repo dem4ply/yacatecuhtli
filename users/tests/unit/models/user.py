@@ -14,18 +14,3 @@ class Test_user_model( TestCase ):
 		user.token.delete.assert_not_called()
 		token_save.assert_not_called()
 		self.assertEqual( token.user.pk, user.pk )
-
-	def test_str( self ):
-		user = User( pk=1, username='test' )
-		user.token = Token_factory.build()
-		user_str = str( user )
-		self.assertEqual( user_str, "{} - {}, {}".format(
-			user.pk, user.username, user.token )
-		)
-
-	def test_str_no_token( self ):
-		user = User( pk=1, username='test' )
-		user_str = str( user )
-		self.assertEqual( user_str, "{} - {}, ".format(
-			user.pk, user.username )
-		)

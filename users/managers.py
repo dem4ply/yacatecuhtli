@@ -42,7 +42,6 @@ class User_manager( BaseUserManager ):
 		"""
 		Crea un usuario para pruebas
 		"""
-		from seller.models import Seller
 		if not username:
 			username = sp_random.generate_string()
 		if not email:
@@ -50,14 +49,12 @@ class User_manager( BaseUserManager ):
 		if not password:
 			password = 'password'
 		user = self.create_user( username, email, password )
-		seller = Seller.objects.create_test( user=user )
 		return user
 
 	def create_superuser_test( self, username=None, email=None, password=None ):
 		"""
 		Crea un super usuairo para las pruebas
 		"""
-		from seller.models import Seller
 		if not username:
 			username = sp_random.generate_string()
 		if not email:
@@ -65,5 +62,4 @@ class User_manager( BaseUserManager ):
 		if not password:
 			password = 'password'
 		user = self.create_superuser( username, email, password )
-		seller = Seller.objects.create_test( user=user )
 		return user

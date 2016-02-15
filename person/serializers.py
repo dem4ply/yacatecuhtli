@@ -1,102 +1,95 @@
-from .models import Person, Country, Address
+from .models import (
+	Person as Person_model,
+	Country as Country_model,
+	Address as Address_model )
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext as _
 from rest_framework import serializers, status
 from system.exceptions import Http_code_error
 from django.db.models import Q
 
-class Country_serializer( serializers.ModelSerializer ):
+class Country( serializers.ModelSerializer ):
 	class Meta:
-		model = Country
+		model = Country_model
 		fields = ( '__all__' )
-		read_only_fields = ( 'pk' )
 
-	def create( self, validate_country ):
-		return Country( **validate_country )
+	def create( self, validate_data ):
+		return Country_model( **validate_data )
 
-	def update( self, instance, validate_country ):
-		instance.iso = validate_country.get( 'iso', instance.iso )
-		instance.name = validate_country.get( 'name', instance.name )
+	def update( self, instance, validate_data ):
+		instance.iso = validate_data.get( 'iso', instance.iso )
+		instance.name = validate_data.get( 'name', instance.name )
 
-		instance.save()
 		return instance
 
-class Country_nested_serializer( serializers.ModelSerializer ):
-	class Meta:
-		model = Country
-		fields = ( 'pk', 'iso', 'name', )
-		read_only_fields = ( 'name', )
+class Country_nested( serializers.Serializer ):
+	"""
+	Este serializador se utiliza cuando se agrega anidado a otro serializador
+	solo valida que el pais exista
+	"""
+	iso = serializers.CharField( max_length=3 )
 
-	def validate( self, data ):
-		pk = data.get( 'pk', 0 )
-		iso = data.get( 'iso', '' )
-		if int( pk ) > 0 or iso != '':
-			country = Country.objects.filter( Q( pk=pk ) | Q( iso=iso ) ):
-			if country.exists():
-				return data
-			else:
-				raise serializers.ValidationError(
-					"No se encontro el pais en la base de datos"
-				)
-				
-		raise serializers.ValidationError(
-			"Se debe de mandar almenos un parametro pk o iso"
-		)
+	def validate_iso( self, iso ):
+		country = Country_model.objects.filter( iso=iso )
+		if country.exists():
+			return iso
+		else:
+			raise serializers.ValidationError(
+				_( "No se encontro el pais con el iso '%s'" ) % ( iso )
+			)
+
+class Person( serializers.ModelSerializer ):
+	class Meta:
+		model = Person_model
+		fields = '__all__'
+		read_only_fields = ( 'pk', )
+
+	def create( self, validate_data ):
+		return Person_model( **validate_data )
 	
-class Address_serializer( serializers.ModelSerializer ):
-	country = Country_nested_serializer()
+	def update( self, instance, validate_data ):
+		instance.name = validate_data.get( 'name', instance.name )
+		instance.last_name = validate_data.get( 'last_name', instance.last_name )
+		instance.dni = validate_data.get( 'dni', instance.dni )
+		instance.email = validate_data.get( 'email', instance.email )
+		instance.status = validate_data.get( 'status', instance.status )
+
+		return instance
+	
+class Address( serializers.ModelSerializer ):
+	country = Country_nested()
 
 	class Meta:
-		model = Address
+		model = Address_model
 		fields = ( '__all__' )
 		read_only_fields = ( 'pk', 'person' )
 
 	def create( self, validate_data ):
-		country = validate_address.pop( 'country' )
-		country = Country.objects.get( **country )
-		address = Address( **validate_data )
+		country = validate_data.pop( 'country' )
+		country = Country_model.objects.get( **country )
+		address = Address_model( **validate_data )
 		address.country = country
-		
 		return address
 
-	def update( self, instance, validate_address ):
-		country = validate_address.pop( 'country' )
-		country = Country.objects.get( **country )
+	def update( self, instance, validate_data ):
+		country = validate_data.pop( 'country' )
+		if country:
+			country = Country_model.objects.get( **country )
+			instance.country = country
 
-		instance.description = validate_address.get( 'description',
+		instance.description = validate_data.get( 'description',
 			instance.description )
-		instance.street = validate_address.get( 'street',
+		instance.street = validate_data.get( 'street',
 			instance.street )
-		instance.external_number = validate_address.get( 'external_number',
+		instance.external_number = validate_data.get( 'external_number',
 			instance.external_number )
-		instance.internal_number = validate_address.get( 'internal_number',
+		instance.internal_number = validate_data.get( 'internal_number',
 			instance.internal_number )
-		instance.neighbour = validate_address.get( 'neighbour',
+		instance.neighbour = validate_data.get( 'neighbour',
 			instance.neighbour )
-		instance.city = validate_address.get( 'city', instance.city )
-		instance.state = validate_address.get( 'state', instance.state )
-		instance.zipcode = validate_address.get( 'zipcode',
+		instance.city = validate_data.get( 'city', instance.city )
+		instance.state = validate_data.get( 'state', instance.state )
+		instance.zipcode = validate_data.get( 'zipcode',
 			instance.zipcode )
 
-		instance.save()
-		return instance
-
-class Person_serializer( serializers.ModelSerializer ):
-	class Meta:
-		model = Person
-		fields = '__all__'
-		read_only_fields = ( 'pk', )
-
-	def create( self, validate_person ):
-		return Person( **validate_person )
-	
-	def update( self, instance, validate_person ):
-		instance.name = validate_person.get( 'name', instance.name )
-		instance.last_name = validate_person.get( 'last_name', instance.last_name )
-		instance.dni = validate_person.get( 'dni', instance.dni )
-		instance.email = validate_person.get( 'email', instance.email )
-		instance.status = validate_person.get( 'status', instance.status )
-
-		instance.save()
 		return instance

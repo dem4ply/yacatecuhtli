@@ -1,5 +1,9 @@
 from django.db import models
 
+class Country( models.Model ):
+	iso = models.CharField( max_length=3, primary_key=True )
+	name = models.CharField( max_length=64 )
+
 class Person( models.Model ):
 	name = models.CharField( max_length=128 )
 	last_name = models.CharField( max_length=128 )
@@ -7,9 +11,6 @@ class Person( models.Model ):
 	email = models.CharField( max_length=128 )
 	status = models.BooleanField( default=True )
 
-class Country( models.Model ):
-	iso = models.CharField( max_length=3, unique=True )
-	name = models.CharField( max_length=64 )
 
 class Address( models.Model ):
 	description = models.CharField( max_length=128 )

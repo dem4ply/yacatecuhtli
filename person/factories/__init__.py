@@ -1,5 +1,5 @@
-from .address import Address_factory
-from .country import Country_factory
-from .person import Person_factory
+from .address import Address
+from .country import Country
+from .person import Person
 
-__all__ = [ 'Address_factory', 'Country_factory', 'Person_factory' ]
+__all__ = [ 'Country', 'Address', 'Person' ]

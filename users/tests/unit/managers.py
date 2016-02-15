@@ -38,8 +38,7 @@ class Test_user_manager( TestCase ):
 
 	@patch( "users.models.User.save" )
 	@patch( "users.models.Token.save" )
-	@patch( "seller.models.Seller.save" )
-	def test_create_superuser_test( self, user_save, token_save, seller_save ):
+	def test_create_superuser_test( self, user_save, token_save ):
 		user = User.objects.create_superuser_test()
 		self.assertTrue( user.is_staff )
 		self.assertTrue( user.is_superuser )
@@ -48,8 +47,7 @@ class Test_user_manager( TestCase ):
 
 	@patch( "users.models.User.save" )
 	@patch( "users.models.Token.save" )
-	@patch( "seller.models.Seller.save" )
-	def test_create_user_test( self, user_save, token_save, seller_save):
+	def test_create_user_test( self, user_save, token_save ):
 		user = User.objects.create_user_test()
 		self.assertFalse( user.is_staff )
 		self.assertFalse( user.is_superuser )

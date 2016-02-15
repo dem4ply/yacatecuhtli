@@ -4,8 +4,10 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ( User_login_serializer, User_serializer )
-from .models import User
+from .serializers import (
+	User_login as User_login_serializer,
+	User as User_serializer )
+from .models import User as User_model
 
 from django.contrib.auth import authenticate
 from rest_framework.decorators import detail_route, list_route
@@ -13,20 +15,19 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
 from system.exceptions import Http_code_error
 
-class User_view( viewsets.ModelViewSet ):
+class User( viewsets.ModelViewSet ):
 	"""
 	CRUD para los usuarios
 	"""
 	#permission_classes = ( IsAuthenticated, )
 	serializer_class = User_serializer
-	queryset = User.objects.all()
+	queryset = User_model.objects.all()
 
 	@list_route( methods=[ 'post' ], url_path='login',
-		permission_classes=[], authentication_classes=[] )
+		permission_classes=[ AllowAny ], authentication_classes=[ AllowAny ] )
 	def login( self, request, format=None ):
 		data = User_login_serializer( data=request.data )
 		data.is_valid( raise_exception=True )
-
 		user = authenticate( **data.data )
 		if user:
 			if user.is_active:
@@ -43,9 +44,6 @@ class User_view( viewsets.ModelViewSet ):
 	def create( self, request, format=None ):
 		data = User_serializer( data=request.data )
 		data.is_valid( raise_exception=True )
-		data = data.data
-		User.objects.create_user( data[ 'username' ], data[ 'email' ],
-			data[ 'password' ] )
 		user = data.save()
 		user.save()
 		return Response( User_serializer( user ).data,

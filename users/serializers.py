@@ -1,34 +1,33 @@
-from .models import User, Token
+from .models import User as User_model, Token as Token_model
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext as _
 from rest_framework import serializers, status
 from system.exceptions import Http_code_error
-from seller.serializers import Seller_serializer
 
-class User_login_serializer( serializers.ModelSerializer ):
+class User_login( serializers.ModelSerializer ):
 	username = serializers.CharField( max_length=64 )
 	password = serializers.CharField( max_length=128 )
 	class Meta:
-		model = User
+		model = User_model
 		fields = ( 'username', 'password' )
 
-class Token_serializer( serializers.ModelSerializer ):
+class Token( serializers.ModelSerializer ):
 	class Meta:
-		model = Token
+		model = Token_model
 		fields = ( 'public_key', 'private_key', 'test_public_key',
 			'test_private_key' )
 
-class User_serializer( serializers.ModelSerializer ):
-	token = Token_serializer()
-	seller = Seller_serializer( required=False )
+class User( serializers.ModelSerializer ):
+	token = Token( required=False )
 
 	class Meta:
-		model = User
-		fields = ( 'username', 'email', 'token', 'seller', 'password' )
-		only_read_field = ( 'pk', 'token', 'seller' )
+		model = User_model
+		fields = ( 'username', 'email', 'token', 'password' )
+		only_read_field = ( 'pk', 'token', )
 		only_write_field = ( 'password' )
 
 	def create( self, validate_data ):
-		user = User( **validate_data )
+		user = User_model( **validate_data )
 		user.set_password( validate_data[ 'password' ] )
+		return user

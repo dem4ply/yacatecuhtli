@@ -1,10 +1,10 @@
 import factory
 import factory.fuzzy
 from person.models import Address
-from .country import Country_factory
+from .country import Country
 from snippet import sp_random
 
-class Address_factory( factory.DjangoModelFactory ):
+class Address( factory.DjangoModelFactory ):
 	#pk = factory.fuzzy.FuzzyInteger( 1000 )
 	description = factory.LazyAttribute( lambda t: sp_random.generate_string( ) )
 	street = factory.LazyAttribute( lambda t: sp_random.generate_string( ) )
@@ -16,6 +16,6 @@ class Address_factory( factory.DjangoModelFactory ):
 	zipcode = factory.LazyAttribute( lambda t: sp_random.generate_string( ) )
 	address_type = factory.LazyAttribute( lambda t: sp_random.generate_string( ) )
 
-	country = factory.SubFactory( Country_factory )
+	country = factory.SubFactory( Country )
 	class Meta:
 		model = Address
