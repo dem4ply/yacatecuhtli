@@ -51,6 +51,24 @@ def generate_email( domain=None, extention=None ):
 		'extention': extention,
 	})
 
+def generate_string_numeric( self, length=10, numbers=string.digits ):
+	"""
+	Genera una cadena de numeros
+	
+	Arguments
+	---------
+	length: int
+		longitud de la cadena
+	numbers: string
+		lista de numeros que se utilizaran
+	
+	Returns
+	-------
+	string
+		una cadena de numeros aleatoria
+	"""
+	return generate_string( length=length, letters=numbers )
+
 def generate_bool():
 	"""
 	Genera un booleano aleatorio

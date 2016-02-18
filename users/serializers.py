@@ -18,14 +18,24 @@ class Token( serializers.ModelSerializer ):
 		fields = ( 'public_key', 'private_key', 'test_public_key',
 			'test_private_key' )
 
+class User_register( serializers.ModelSerializer ):
+	class Meta:
+		model = User_model
+		fields = ( 'username', 'email', 'password' )
+		only_write_field = ( 'password', )
+	
+	def create( self, validate_data ):
+		user = User_model( **validate_data )
+		user.set_password( validate_data[ 'password' ] )
+		return user
+
 class User( serializers.ModelSerializer ):
 	token = Token( required=False )
 
 	class Meta:
 		model = User_model
-		fields = ( 'username', 'email', 'token', 'password' )
+		fields = ( 'username', 'email', 'token', )
 		only_read_field = ( 'pk', 'token', )
-		only_write_field = ( 'password' )
 
 	def create( self, validate_data ):
 		user = User_model( **validate_data )

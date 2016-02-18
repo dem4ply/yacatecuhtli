@@ -7,7 +7,6 @@ router = routers.SimpleRouter()
 router.register( r'user', User, base_name='user' )
 
 urlpatterns = router.urls
-print( urlpatterns )
 
 urlpatterns = format_suffix_patterns( urlpatterns, suffix_required=True,
 	allowed=[ 'json', 'xml' ] )

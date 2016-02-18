@@ -6,7 +6,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import (
 	User_login as User_login_serializer,
-	User as User_serializer )
+	User as User_serializer,
+	User_register as User_register_serializer )
 from .models import User as User_model
 
 from django.contrib.auth import authenticate
@@ -42,9 +43,10 @@ class User( viewsets.ModelViewSet ):
 	@authentication_classes( ( AllowAny, ) )
 	@permission_classes( ( AllowAny, ) )
 	def create( self, request, format=None ):
-		data = User_serializer( data=request.data )
+		data = User_register_serializer( data=request.data )
 		data.is_valid( raise_exception=True )
 		user = data.save()
 		user.save()
+		user.refresh_token()
 		return Response( User_serializer( user ).data,
 			status=status.HTTP_201_CREATED )
